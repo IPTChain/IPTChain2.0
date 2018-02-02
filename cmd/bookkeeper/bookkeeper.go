@@ -7,7 +7,7 @@ import (
 	"IPT/core/signature"
 	"IPT/core/transaction"
 	"IPT/crypto"
-	"IPT/msg/httpjsonrpc"
+	"IPT/msg/rpc"
 	"bytes"
 	"encoding/hex"
 	"fmt"
@@ -113,7 +113,7 @@ func assetAction(c *cli.Context) error {
 		return err
 	}
 
-	resp, err := httpjsonrpc.Call(Address(), "sendrawtransaction", 0, []interface{}{txHex})
+	resp, err := rpc.Call(Address(), "sendrawtransaction", 0, []interface{}{txHex})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		return err

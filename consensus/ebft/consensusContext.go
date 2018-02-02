@@ -8,7 +8,7 @@ import (
 	"IPT/core/ledger"
 	tx "IPT/core/transaction"
 	"IPT/crypto"
-	"IPT/msg"
+	net "IPT/msg"
 	msg "IPT/msg/message"
 	"fmt"
 	"sync"
@@ -167,7 +167,7 @@ func (cxt *ConsensusContext) GetStateDetail() string {
 
 }
 
-func (cxt *ConsensusContext) Reset(client cl.Client, localNode net.Neter) {
+func (cxt *ConsensusContext) Reset(client cl.Client, localNode net.Msger) {
 	log.Debug()
 	cxt.State = Initial
 	cxt.PrevHash = ledger.DefaultLedger.Blockchain.CurrentBlockHash()

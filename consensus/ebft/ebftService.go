@@ -4,6 +4,7 @@ import (
 	cl "IPT/account"
 	. "IPT/common"
 	"IPT/common/config"
+	. "IPT/common/errors"
 	"IPT/common/log"
 	con "IPT/consensus"
 	ct "IPT/core/contract"
@@ -14,9 +15,8 @@ import (
 	tx "IPT/core/transaction"
 	"IPT/core/transaction/payload"
 	va "IPT/core/validation"
-	. "IPT/common/errors"
 	"IPT/event"
-	"IPT/msg"
+	net "IPT/msg"
 	msg "IPT/msg/message"
 	"errors"
 	"fmt"
@@ -38,13 +38,13 @@ type DbftService struct {
 	blockReceivedTime time.Time
 	logDictionary     string
 	started           bool
-	localNet          net.Neter
+	localNet          net.Msger
 
 	newInventorySubscriber          events.Subscriber
 	blockPersistCompletedSubscriber events.Subscriber
 }
 
-func NewDbftService(client cl.Client, logDictionary string, localNet net.Neter) *DbftService {
+func NewDbftService(client cl.Client, logDictionary string, localNet net.Msger) *DbftService {
 	log.Debug()
 
 	ds := &DbftService{

@@ -6,21 +6,22 @@ import (
 	"IPT/core/contract"
 	"IPT/core/signature"
 	"IPT/core/transaction"
-	"IPT/msg/httpjsonrpc"
+	"IPT/msg/rpc"
 	"bytes"
 	"encoding/hex"
 	"fmt"
-	"github.com/urfave/cli"
 	"math/rand"
 	"os"
 	"strconv"
+
+	"github.com/urfave/cli"
 )
 
 func openWallet(name string, passwd []byte) account.Client {
 	if name == account.WalletFileName {
 		fmt.Println("Using default wallet: ", account.WalletFileName)
 	}
-	wallet,err := account.Open(name, passwd)
+	wallet, err := account.Open(name, passwd)
 	if err != nil {
 		fmt.Println("Failed to open wallet: ", name)
 		os.Exit(1)
@@ -123,7 +124,7 @@ func dataAction(c *cli.Context) error {
 
 		fmt.Println("data uploading...")
 		//tranfer data to node
-		resp, err = httpjsonrpc.Call(Address(), "uploadDataFile", 0, []interface{}{payload})
+		resp, err = rpc.Call(Address(), "uploadDataFile", 0, []interface{}{payload})
 
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
@@ -166,7 +167,7 @@ func dataAction(c *cli.Context) error {
 
 		txHex := hex.EncodeToString(buffer.Bytes())
 
-		resp, err = httpjsonrpc.Call(Address(), "regdatafile", 0, []interface{}{txHex})
+		resp, err = rpc.Call(Address(), "regdatafile", 0, []interface{}{txHex})
 
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
@@ -181,7 +182,7 @@ func dataAction(c *cli.Context) error {
 			return nil
 		}
 		if txhash != "" {
-			resp, err = httpjsonrpc.Call(Address(), "catdatarecord", 0, []interface{}{txhash})
+			resp, err = rpc.Call(Address(), "catdatarecord", 0, []interface{}{txhash})
 
 		}
 
@@ -193,7 +194,7 @@ func dataAction(c *cli.Context) error {
 			return nil
 		}
 		if txhash != "" {
-			resp, err = httpjsonrpc.Call(Address(), "getdataile", 0, []interface{}{txhash})
+			resp, err = rpc.Call(Address(), "getdataile", 0, []interface{}{txhash})
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
 				return err

@@ -2,13 +2,8 @@ package contracts
 
 import (
 	"IPT/common"
+	"IPT/common/errors"
 	"IPT/common/serialization"
-	"IPT/core/asset"
-	"IPT/core/contract"
-	"IPT/core/ledger"
-	sig "IPT/core/signature"
-	"IPT/core/transaction"
-	"IPT/errors"
 	"IPT/contracts/service"
 	"IPT/contracts/states"
 	"IPT/contracts/storage"
@@ -16,7 +11,12 @@ import (
 	"IPT/contracts/vm/avm"
 	"IPT/contracts/vm/avm/interfaces"
 	. "IPT/contracts/vm/avm/types"
-	
+	"IPT/core/asset"
+	"IPT/core/contract"
+	"IPT/core/ledger"
+	sig "IPT/core/signature"
+	"IPT/core/transaction"
+
 	"bytes"
 	"math/big"
 	"strconv"

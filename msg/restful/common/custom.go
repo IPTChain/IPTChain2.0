@@ -2,12 +2,12 @@ package common
 
 import (
 	. "IPT/common"
+	. "IPT/common/errors"
 	"IPT/core/ledger"
 	tx "IPT/core/transaction"
 	"IPT/core/transaction/payload"
-	. "IPT/common/errors"
-	. "IPT/msg/httpjsonrpc"
-	Err "IPT/msg/httprestful/error"
+	Err "IPT/msg/restful/error"
+	. "IPT/msg/rpc"
 	"bytes"
 	"encoding/json"
 	"time"

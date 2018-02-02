@@ -33,6 +33,8 @@ func StartRPCServer() {
 	HandleFunc("createmultisigtransaction", createMultisigTransaction)
 	HandleFunc("signmultisigtransaction", signMultisigTransaction)
 
+	HandleFunc("createAccountForCust", createAccountForCust)
+
 	err := http.ListenAndServe(LocalHost+":"+strconv.Itoa(Parameters.HttpJsonPort), nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err.Error())

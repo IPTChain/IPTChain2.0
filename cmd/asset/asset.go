@@ -10,8 +10,8 @@ import (
 	. "IPT/cmd/common"
 	. "IPT/common"
 	"IPT/core/transaction"
-	"IPT/msg/httpjsonrpc"
-	
+	"IPT/msg/rpc"
+	"IPT/sdk"
 
 	"github.com/urfave/cli"
 )
@@ -119,7 +119,7 @@ func assetAction(c *cli.Context) error {
 	case c.Bool("transfer"):
 		assetID := c.String("asset")
 		address := parseAddress(c)
-		resp, err := httpjsonrpc.Call(Address(), "sendtoaddress", 0, []interface{}{assetID, address, value})
+		resp, err := rpc.Call(Address(), "sendtoaddress", 0, []interface{}{assetID, address, value})
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			return err
@@ -129,7 +129,7 @@ func assetAction(c *cli.Context) error {
 	case c.Bool("lock"):
 		assetID := c.String("asset")
 		height := parseHeight(c)
-		resp, err := httpjsonrpc.Call(Address(), "lockasset", 0, []interface{}{assetID, value, height})
+		resp, err := rpc.Call(Address(), "lockasset", 0, []interface{}{assetID, value, height})
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			return err
@@ -148,7 +148,7 @@ func assetAction(c *cli.Context) error {
 		fmt.Println("serialize transaction failed")
 		return err
 	}
-	resp, err := httpjsonrpc.Call(Address(), "sendrawtransaction", 0, []interface{}{BytesToHexString(buffer.Bytes())})
+	resp, err := rpc.Call(Address(), "sendrawtransaction", 0, []interface{}{BytesToHexString(buffer.Bytes())})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		return err

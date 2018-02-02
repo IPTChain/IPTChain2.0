@@ -8,17 +8,17 @@ import (
 	"IPT/account"
 	"IPT/common/config"
 	"IPT/common/log"
-	"IPT/consensus/dbft"
+	"IPT/consensus/ebft"
 	"IPT/core/ledger"
 	"IPT/core/store/ChainStore"
 	"IPT/core/transaction"
 	"IPT/crypto"
-	"IPT/msg"
-	"IPT/msg/rpc"
+	net "IPT/msg"
 	"IPT/msg/nodeinfo"
-	"IPT/msg/restful"
-	"IPT/msg/socket"
 	"IPT/msg/protocol"
+	"IPT/msg/restful"
+	"IPT/msg/rpc"
+	"IPT/msg/socket"
 )
 
 const (
@@ -91,35 +91,35 @@ func main() {
 			goto ERROR
 		}
 		// expose wallet to httpjson interface
-		httpjsonrpc.Wallet = client
+		rpc.Wallet = client
 	}
 	log.Info("The Node's PublicKey ", acct.PublicKey)
 
 	log.Info("3. Start the P2P networks")
 	noder = net.StartProtocol(acct.PublicKey)
-	httpjsonrpc.RegistRpcNode(noder)
+	rpc.RegistRpcNode(noder)
 	time.Sleep(10 * time.Second)
 	noder.SyncNodeHeight()
 	noder.WaitForFourPeersStart()
 	noder.WaitForSyncBlkFinish()
 	if protocol.VERIFYNODENAME == config.Parameters.NodeType {
 		log.Info("4. Start DBFT Services")
-		dbftServices := dbft.NewDbftService(client, "logdbft", noder)
-		httpjsonrpc.RegistDbftService(dbftServices)
+		dbftServices := ebft.NewDbftService(client, "logdbft", noder)
+		rpc.RegistDbftService(dbftServices)
 		go dbftServices.Start()
 		time.Sleep(5 * time.Second)
 	}
 
 	log.Info("--Start the RPC interface")
-	go httpjsonrpc.StartRPCServer()
-	go httprestful.StartServer(noder)
-	go httpwebsocket.StartServer(noder)
+	go rpc.StartRPCServer()
+	go restful.StartServer(noder)
+	go socket.StartServer(noder)
 	if config.Parameters.HttpInfoStart {
-		go httpnodeinfo.StartServer(noder)
+		go nodeinfo.StartServer(noder)
 	}
 
 	for {
-		time.Sleep(dbft.GenBlockTime)
+		time.Sleep(ebft.GenBlockTime)
 		log.Trace("BlockHeight = ", ledger.DefaultLedger.Blockchain.BlockHeight)
 		isNeedNewFile := log.CheckIfNeedNewFile()
 		if isNeedNewFile == true {

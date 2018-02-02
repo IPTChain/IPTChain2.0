@@ -8,7 +8,7 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
-	"msg"
+	"net"
 	"strconv"
 )
 
@@ -163,7 +163,7 @@ func (msg addr) Verify(buf []byte) error {
 func (msg addr) Handle(node Noder) error {
 	log.Debug()
 	for _, v := range msg.nodeAddrs {
-		var ip msg.IP
+		var ip net.IP
 		ip = v.IpAddr[:]
 		//address := ip.To4().String() + ":" + strconv.Itoa(int(v.Port))
 		address := ip.To16().String() + ":" + strconv.Itoa(int(v.Port))

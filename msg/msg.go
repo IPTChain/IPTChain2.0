@@ -2,16 +2,16 @@ package msg
 
 import (
 	. "IPT/common"
+	. "IPT/common/errors"
 	"IPT/core/ledger"
 	"IPT/core/transaction"
 	"IPT/crypto"
-	. "IPT/common/errors"
 	"IPT/event"
 	"IPT/msg/node"
 	"IPT/msg/protocol"
 )
 
-type msger interface {
+type Msger interface {
 	GetTxnPool(byCount bool) map[Uint256]*transaction.Transaction
 	Xmit(interface{}) error
 	GetEvent(eventName string) *events.Event

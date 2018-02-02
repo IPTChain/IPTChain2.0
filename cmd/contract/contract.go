@@ -5,20 +5,21 @@ import (
 	. "IPT/cmd/common"
 	"IPT/common"
 	"IPT/common/password"
+	"IPT/contracts/types"
 	"IPT/core/code"
 	"IPT/core/contract"
 	"IPT/core/signature"
 	"IPT/core/transaction"
-	httpjsonrpc "IPT/net/httpjsonrpc"
-	"IPT/contracts/types"
+	httpjsonrpc "IPT/msg/rpc"
 	"bytes"
 	"encoding/hex"
 	"fmt"
-	"github.com/urfave/cli"
 	"io/ioutil"
 	"math/rand"
 	"os"
 	"strconv"
+
+	"github.com/urfave/cli"
 )
 
 func newContractContextWithoutProgramHashes(data signature.SignableData) *contract.ContractContext {

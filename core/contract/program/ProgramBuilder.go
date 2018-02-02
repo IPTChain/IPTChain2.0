@@ -2,9 +2,9 @@ package program
 
 import (
 	. "IPT/common"
+	"IPT/contracts/vm/avm"
 	"bytes"
 	"math/big"
-	
 )
 
 type ProgramBuilder struct {

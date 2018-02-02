@@ -2,12 +2,12 @@ package contract
 
 import (
 	. "IPT/common"
-	"IPT/common/serialization"
 	. "IPT/common/errors"
+	"IPT/common/serialization"
+	"IPT/contracts/vm/avm"
 	"bytes"
 	"errors"
 	"io"
-	"IPT/vm/avm"
 )
 
 //Contract address is the hash of contract program .

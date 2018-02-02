@@ -2,13 +2,13 @@ package common
 
 import (
 	. "IPT/common"
+	. "IPT/common/errors"
+	"IPT/contracts/states"
 	"IPT/core/ledger"
 	tx "IPT/core/transaction"
-	. "IPT/common/errors"
-	. "IPT/msg/httpjsonrpc"
-	Err "IPT/msg/httprestful/error"
 	. "IPT/msg/protocol"
-	"IPT/contracts/states"
+	Err "IPT/msg/restful/error"
+	. "IPT/msg/rpc"
 	"bytes"
 	"fmt"
 	"strconv"

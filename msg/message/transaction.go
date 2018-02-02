@@ -2,10 +2,10 @@ package message
 
 import (
 	"IPT/common"
+	. "IPT/common/errors"
 	"IPT/common/log"
 	"IPT/core/ledger"
 	"IPT/core/transaction"
-	. "IPT/errors"
 	. "IPT/msg/protocol"
 	"bytes"
 	"crypto/sha256"

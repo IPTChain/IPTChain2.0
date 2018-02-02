@@ -5,7 +5,7 @@ import (
 	"os"
 
 	. "IPT/cmd/common"
-	"IPT/msg/httpjsonrpc"
+	"IPT/msg/rpc"
 
 	"github.com/urfave/cli"
 )
@@ -17,7 +17,7 @@ func debugAction(c *cli.Context) (err error) {
 	}
 	level := c.Int("level")
 	if level != -1 {
-		resp, err := httpjsonrpc.Call(Address(), "setdebuginfo", 0, []interface{}{level})
+		resp, err := rpc.Call(Address(), "setdebuginfo", 0, []interface{}{level})
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			return err

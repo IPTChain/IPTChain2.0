@@ -9,14 +9,13 @@ import (
 	"IPT/cmd/bookkeeper"
 	. "IPT/cmd/common"
 	"IPT/cmd/consensus"
+	"IPT/cmd/contract"
 	"IPT/cmd/data"
 	"IPT/cmd/debug"
 	"IPT/cmd/info"
 	"IPT/cmd/multisig"
-	"IPT/cmd/privpayload"
+	"IPT/cmd/priv"
 	"IPT/cmd/recover"
-	"IPT/cmd/smartcontract"
-	"IPT/cmd/test"
 	"IPT/cmd/wallet"
 
 	"github.com/urfave/cli"
@@ -43,15 +42,14 @@ func main() {
 		*consensus.NewCommand(),
 		*debug.NewCommand(),
 		*info.NewCommand(),
-		*test.NewCommand(),
 		*wallet.NewCommand(),
 		*asset.NewCommand(),
-		*privpayload.NewCommand(),
+		*priv.NewCommand(),
 		*data.NewCommand(),
 		*bookkeeper.NewCommand(),
 		*recover.NewCommand(),
 		*multisig.NewCommand(),
-		*smartcontract.NewCommand(),
+		*contract.NewCommand(),
 	}
 	sort.Sort(cli.CommandsByName(app.Commands))
 	sort.Sort(cli.FlagsByName(app.Flags))

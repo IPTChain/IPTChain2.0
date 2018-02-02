@@ -5,7 +5,7 @@ import (
 	"os"
 
 	. "IPT/cmd/common"
-	"IPT/msg/httpjsonrpc"
+	"IPT/msg/rpc"
 
 	"github.com/urfave/cli"
 )
@@ -17,7 +17,7 @@ func consensusAction(c *cli.Context) (err error) {
 	}
 	var resp []byte
 	if c.Bool("start") {
-		resp, err = httpjsonrpc.Call(Address(), "startconsensus", 0, []interface{}{})
+		resp, err = rpc.Call(Address(), "startconsensus", 0, []interface{}{})
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			return err
@@ -25,7 +25,7 @@ func consensusAction(c *cli.Context) (err error) {
 		FormatOutput(resp)
 	}
 	if c.Bool("stop") {
-		resp, err = httpjsonrpc.Call(Address(), "stopconsensus", 0, []interface{}{})
+		resp, err = rpc.Call(Address(), "stopconsensus", 0, []interface{}{})
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			return err

@@ -7,7 +7,7 @@ import (
 	"IPT/event"
 	"IPT/msg/restful/common"
 	Err "IPT/msg/restful/error"
-	"IPT/msg/hsocket/websocket"
+	"IPT/msg/socket/websocket"
 	. "IPT/msg/protocol"
 	"bytes"
 )

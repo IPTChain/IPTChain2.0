@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	
+	"github.com/dnaproject/gopass"
 )
 
 // GetPassword gets password from user input

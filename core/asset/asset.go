@@ -1,11 +1,11 @@
 package asset
 
 import (
+	. "IPT/common/errors"
 	"IPT/common/serialization"
-	. "IPT/errors"
+	"bytes"
 	"errors"
 	"io"
-	"bytes"
 )
 
 //AssetType
@@ -100,8 +100,7 @@ func (a *Asset) Deserialize(r io.Reader) error {
 	return nil
 }
 
-
-func (a *Asset) ToArray() ([]byte) {
+func (a *Asset) ToArray() []byte {
 	b := new(bytes.Buffer)
 	a.Serialize(b)
 	return b.Bytes()

@@ -2,12 +2,12 @@ package contract
 
 import (
 	. "IPT/common"
+	. "IPT/common/errors"
+	"IPT/contracts/vm/avm"
 	pg "IPT/core/contract/program"
 	"IPT/crypto"
-	. "IPT/common/errors"
 	"math/big"
 	"sort"
-	"IPT/vm/avm"
 )
 
 //create a Single Singature contract for owner

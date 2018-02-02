@@ -6,10 +6,10 @@ import (
 	"os"
 
 	"IPT/account"
-	. "IPT/cli/common"
+	. "IPT/cmd/common"
 	"IPT/common"
 	"IPT/core/transaction"
-	"IPT/msg/httpjsonrpc"
+	"IPT/msg/rpc"
 
 	"github.com/urfave/cli"
 )
@@ -35,7 +35,7 @@ func createMultisigTransaction(c *cli.Context) error {
 		fmt.Fprintln(os.Stderr, msg)
 		os.Exit(1)
 	}
-	resp, err := httpjsonrpc.Call(Address(), "createmultisigtransaction", 0, []interface{}{asset, from, to, value})
+	resp, err := rpc.Call(Address(), "createmultisigtransaction", 0, []interface{}{asset, from, to, value})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		return err
@@ -74,7 +74,7 @@ func checkMultisigTransaction(c *cli.Context) error {
 
 func signMultisigTransaction(c *cli.Context) error {
 	if rawtxn := c.String("rawtxn"); rawtxn != "" {
-		resp, err := httpjsonrpc.Call(Address(), "signmultisigtransaction", 0, []interface{}{rawtxn})
+		resp, err := rpc.Call(Address(), "signmultisigtransaction", 0, []interface{}{rawtxn})
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			return err

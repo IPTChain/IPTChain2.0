@@ -2,11 +2,11 @@ package rpc
 
 import (
 	. "IPT/common"
+	. "IPT/common/errors"
 	"IPT/common/log"
-	"IPT/consensus/dbft"
+	"IPT/consensus/ebft"
 	. "IPT/core/transaction"
 	tx "IPT/core/transaction"
-	. "IPT/common/errors"
 	. "IPT/msg/protocol"
 	"encoding/json"
 	"fmt"
@@ -24,7 +24,7 @@ func init() {
 //an instance of the multiplexer
 var mainMux ServeMux
 var node Noder
-var dBFT *dbft.DbftService
+var dBFT *ebft.DbftService
 
 //multiplexer that keeps track of every function to be called on specific rpc call
 type ServeMux struct {
@@ -131,6 +131,12 @@ type NodeInfo struct {
 	RxTxnCnt uint64 // The transaction received by this node
 }
 
+type AccountWalletInfo struct {
+	Address    string
+	PublicKey  string
+	PrivateKey string
+}
+
 type ConsensusInfo struct {
 	// TODO
 }
@@ -141,7 +147,7 @@ func RegistRpcNode(n Noder) {
 	}
 }
 
-func RegistDbftService(d *dbft.DbftService) {
+func RegistDbftService(d *ebft.DbftService) {
 	if dBFT == nil {
 		dBFT = d
 	}

@@ -112,28 +112,28 @@ func (rt *restServer) setWebsocketState(cmd map[string]interface{}) map[string]i
 		return resp
 	}
 	if b, ok := cmd["PushBlock"].(bool); ok {
-		httpwebsocket.SetWsPushBlockFlag(b)
+		socket.SetWsPushBlockFlag(b)
 	}
 	if b, ok := cmd["PushRawBlock"].(bool); ok {
-		httpwebsocket.SetPushRawBlockFlag(b)
+		socket.SetPushRawBlockFlag(b)
 	}
 	if b, ok := cmd["PushBlockTxs"].(bool); ok {
-		httpwebsocket.SetPushBlockTxsFlag(b)
+		socket.SetPushBlockTxsFlag(b)
 	}
 	if wsPort, ok := cmd["Port"].(float64); ok && wsPort != 0 {
 		Parameters.HttpWsPort = int(wsPort)
 	}
 	if startFlag {
-		httpwebsocket.ReStartServer()
+		socket.ReStartServer()
 	} else {
-		httpwebsocket.Stop()
+		socket.Stop()
 	}
 	var result = make(map[string]interface{})
 	result["Open"] = startFlag
 	result["Port"] = Parameters.HttpWsPort
-	result["PushBlock"] = httpwebsocket.GetWsPushBlockFlag()
-	result["PushRawBlock"] = httpwebsocket.GetPushRawBlockFlag()
-	result["PushBlockTxs"] = httpwebsocket.GetPushBlockTxsFlag()
+	result["PushBlock"] = socket.GetWsPushBlockFlag()
+	result["PushRawBlock"] = socket.GetPushRawBlockFlag()
+	result["PushBlockTxs"] = socket.GetPushBlockTxsFlag()
 	resp["Result"] = result
 	return resp
 }
@@ -167,7 +167,7 @@ func (rt *restServer) registryMethod() {
 		resp := SendRawTransaction(cmd)
 		if userid, ok := resp["Userid"].(string); ok && len(userid) > 0 {
 			if result, ok := resp["Result"].(string); ok {
-				httpwebsocket.SetTxHashMap(result, userid)
+				socket.SetTxHashMap(result, userid)
 			}
 			delete(resp, "Userid")
 		}

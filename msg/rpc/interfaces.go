@@ -13,11 +13,13 @@ import (
 	"IPT/account"
 	. "IPT/common"
 	"IPT/common/config"
+	. "IPT/common/errors"
 	"IPT/common/log"
 	"IPT/core/ledger"
 	"IPT/core/signature"
 	tx "IPT/core/transaction"
-	. "IPT/commonerrors"
+	"IPT/sdk"
+
 	"github.com/mitchellh/go-homedir"
 )
 
@@ -842,6 +844,45 @@ func sendToAddress(params []interface{}) map[string]interface{} {
 	}
 	txHash := txn.Hash()
 	return IPTRpc(BytesToHexString(txHash.ToArrayReverse()))
+}
+
+func createAccountForCust(params []interface{}) map[string]interface{} {
+	if len(params) < 2 {
+		return IPTRpcNil
+	}
+	var first, second string
+
+	switch params[0].(type) {
+	case string:
+		first = params[0].(string)
+	default:
+		return IPTRpcInvalidParameter
+	}
+	switch params[1].(type) {
+	case string:
+		second = params[1].(string)
+	default:
+		return IPTRpcInvalidParameter
+	}
+
+	if first != second {
+		return IPTRpc("error: Unmatched Password")
+	}
+
+	accountAddr, err := account.CreateAccountNotSave()
+	if err != nil {
+		return IPTRpc("error: " + err.Error())
+	}
+
+	address, _ := accountAddr.ProgramHash.ToAddress()
+	publicKey, _ := accountAddr.PublicKey.EncodePoint(true)
+	privateKey := accountAddr.PrivateKey
+	a := AccountWalletInfo{
+		Address:    address,
+		PublicKey:  BytesToHexString(publicKey),
+		PrivateKey: BytesToHexString(privateKey),
+	}
+	return IPTRpc(a)
 }
 
 func lockAsset(params []interface{}) map[string]interface{} {

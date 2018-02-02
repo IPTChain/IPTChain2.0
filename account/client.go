@@ -18,6 +18,7 @@ import (
 
 	. "IPT/common"
 	"IPT/common/config"
+	. "IPT/common/errors"
 	"IPT/common/log"
 	"IPT/common/password"
 	"IPT/core/contract"
@@ -26,7 +27,6 @@ import (
 	sig "IPT/core/signature"
 	"IPT/core/transaction"
 	"IPT/crypto"
-	. "IPT/common/errors"
 	"IPT/event/signalset"
 )
 
@@ -92,6 +92,22 @@ func Create(path string, passwordKey []byte) (*ClientImpl, error) {
 	client.mainAccount = account.ProgramHash
 
 	return client, nil
+}
+
+func CreateNotSave(path string, passwordKey []byte) (*Account, error) {
+	//	client := NewClientNotSave(path, passwordKey, true)
+	//	if client == nil {
+	//		return nil, errors.New("client nil")
+	//	}
+	account, err := CreateAccountNotSave()
+	if err != nil {
+		return nil, err
+	}
+	//	if err := client.CreateContractNotSave(account); err != nil {
+	//		return nil, err
+	//	}
+
+	return account, nil
 }
 
 func Open(path string, passwordKey []byte) (*ClientImpl, error) {
@@ -518,6 +534,19 @@ func (cl *ClientImpl) CreateAccount() (*Account, error) {
 	if err := cl.SaveAccount(account); err != nil {
 		return nil, err
 	}
+
+	return account, nil
+}
+
+// CreateAccount create a new Account then not save it
+func CreateAccountNotSave() (*Account, error) {
+	account, err := NewAccount()
+	if err != nil {
+		return nil, err
+	}
+	//	if err := cl.SaveAccount(account); err != nil {
+	//		return nil, err
+	//	}
 
 	return account, nil
 }

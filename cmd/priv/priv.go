@@ -8,7 +8,7 @@ import (
 	"IPT/core/transaction"
 	"IPT/core/transaction/payload"
 	"IPT/crypto"
-	"IPT/msg/httpjsonrpc"
+	"IPT/msg/rpc"
 	"bytes"
 	"encoding/hex"
 	"encoding/json"
@@ -17,9 +17,10 @@ import (
 	"math/rand"
 	"os"
 
+	"strconv"
+
 	. "github.com/bitly/go-simplejson"
 	"github.com/urfave/cli"
-	"strconv"
 )
 
 func makePrivacyTx(admin *account.Account, toPubkeyStr string, pload string) (string, error) {
@@ -91,7 +92,7 @@ func privpayloadAction(c *cli.Context) error {
 		to := c.String("to")
 
 		txHex, err := makePrivacyTx(admin, to, data)
-		resp, err := httpjsonrpc.Call(Address(), "sendrawtransaction", 0, []interface{}{txHex})
+		resp, err := rpc.Call(Address(), "sendrawtransaction", 0, []interface{}{txHex})
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			return err
@@ -101,7 +102,7 @@ func privpayloadAction(c *cli.Context) error {
 
 	if dec {
 		txhash := c.String("txhash")
-		resp, err := httpjsonrpc.Call(Address(), "getrawtransaction", 0, []interface{}{txhash})
+		resp, err := rpc.Call(Address(), "getrawtransaction", 0, []interface{}{txhash})
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			return err

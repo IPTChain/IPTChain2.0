@@ -16,7 +16,7 @@ import (
 	. "IPT/common"
 	"IPT/common/password"
 	"IPT/crypto"
-	"IPT/events/signalset"
+	"IPT/event/signalset"
 
 	"github.com/urfave/cli"
 )
@@ -56,7 +56,7 @@ func showPrivateKeysInfo(wallet account.Client) {
 	fmt.Println("----  -------\t\t\t\t ----------\t\t\t\t\t\t\t    ----------")
 	for i, account := range accounts {
 		address, _ := account.ProgramHash.ToAddress()
-		publicKey, _  := account.PublicKey.EncodePoint(true)
+		publicKey, _ := account.PublicKey.EncodePoint(true)
 		privateKey := account.PrivateKey
 		fmt.Printf("%4s  %s %s %s\n", strconv.Itoa(i), address, BytesToHexString(publicKey), BytesToHexString(privateKey))
 	}
@@ -258,6 +258,25 @@ func walletAction(c *cli.Context) error {
 		return nil
 	}
 
+	// create wallet and show private key
+	if c.Bool("createPriva") {
+
+		accountAddr, err := account.CreateNotSave(name, getConfirmedPassword(passwd))
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		//			showPrivateKeysInfo(wallet)
+		fmt.Println(" ID   Address\t\t\t\t Public Key\t\t\t\t\t\t\t    Private Key")
+		fmt.Println("----  -------\t\t\t\t ----------\t\t\t\t\t\t\t    ----------")
+		address, _ := accountAddr.ProgramHash.ToAddress()
+		publicKey, _ := accountAddr.PublicKey.EncodePoint(true)
+		privateKey := accountAddr.PrivateKey
+		fmt.Printf("%4s  %s %s %s\n", "0", address, BytesToHexString(publicKey), BytesToHexString(privateKey))
+
+		return nil
+	}
+
 	// list wallet info
 	if item := c.String("list"); item != "" {
 		if item != "account" && item != "mainaccount" && item != "privatekey" && item != "balance" && item != "verbose" && item != "multisig" && item != "height" {
@@ -423,6 +442,10 @@ func NewCommand() *cli.Command {
 			cli.BoolFlag{
 				Name:  "create, c",
 				Usage: "create wallet",
+			},
+			cli.BoolFlag{
+				Name:  "createPriva, cpr",
+				Usage: "create wallet and show private key",
 			},
 			cli.StringFlag{
 				Name:  "list, l",

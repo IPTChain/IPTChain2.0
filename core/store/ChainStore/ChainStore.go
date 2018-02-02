@@ -4,6 +4,9 @@ import (
 	. "IPT/common"
 	"IPT/common/log"
 	"IPT/common/serialization"
+	"IPT/contracts"
+	"IPT/contracts/service"
+	"IPT/contracts/states"
 	"IPT/core/account"
 	. "IPT/core/asset"
 	"IPT/core/contract/program"
@@ -18,9 +21,6 @@ import (
 	. "IPT/msg/restful/common"
 	. "IPT/msg/restful/error"
 	"IPT/msg/socket"
-	"IPT/smartcontract"
-	"IPT/contracts/service"
-	"IPT/contracts/states"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -902,7 +902,7 @@ func (bd *ChainStore) persist(b *Block) error {
 				ProgramHash: deployCode.ProgramHash,
 			})
 
-			smartContract, err := smartcontract.NewSmartContract(&smartcontract.Context{
+			smartContract, err := contracts.NewSmartContract(&contracts.Context{
 				Language:     deployCode.Language,
 				Caller:       deployCode.ProgramHash,
 				StateMachine: service.NewStateMachine(dbCache, NewDBCache(bd)),
@@ -914,23 +914,23 @@ func (bd *ChainStore) persist(b *Block) error {
 			})
 
 			if err != nil {
-				httpwebsocket.PushResult(txHash, SMARTCODE_ERROR, DEPLOY_TRANSACTION, err)
+				socket.PushResult(txHash, SMARTCODE_ERROR, DEPLOY_TRANSACTION, err)
 				return err
 			}
 
 			ret, err := smartContract.DeployContract()
 			if err != nil {
-				httpwebsocket.PushResult(txHash, SMARTCODE_ERROR, DEPLOY_TRANSACTION, err)
+				socket.PushResult(txHash, SMARTCODE_ERROR, DEPLOY_TRANSACTION, err)
 				continue
 			}
 
 			hash, err := ToCodeHash(ret)
 			if err != nil {
-				httpwebsocket.PushResult(txHash, SMARTCODE_ERROR, DEPLOY_TRANSACTION, err)
+				socket.PushResult(txHash, SMARTCODE_ERROR, DEPLOY_TRANSACTION, err)
 				return err
 			}
 
-			httpwebsocket.PushResult(txHash, 0, DEPLOY_TRANSACTION, BytesToHexString(hash.ToArrayReverse()))
+			socket.PushResult(txHash, 0, DEPLOY_TRANSACTION, BytesToHexString(hash.ToArrayReverse()))
 			err = dbCache.Commit()
 			if err != nil {
 				return err
@@ -940,18 +940,18 @@ func (bd *ChainStore) persist(b *Block) error {
 			contract, err := bd.GetContract(invokeCode.CodeHash)
 			if err != nil {
 				log.Error("db getcontract err:", err)
-				httpwebsocket.PushResult(txHash, SMARTCODE_ERROR, INVOKE_TRANSACTION, err)
+				socket.PushResult(txHash, SMARTCODE_ERROR, INVOKE_TRANSACTION, err)
 				continue
 			}
 			state, err := states.GetStateValue(ST_Contract, contract)
 			if err != nil {
 				log.Error("states GetStateValue err:", err)
-				httpwebsocket.PushResult(txHash, SMARTCODE_ERROR, INVOKE_TRANSACTION, err)
+				socket.PushResult(txHash, SMARTCODE_ERROR, INVOKE_TRANSACTION, err)
 				return err
 			}
 			contractState := state.(*states.ContractState)
 			stateMachine := service.NewStateMachine(dbCache, NewDBCache(bd))
-			smartContract, err := smartcontract.NewSmartContract(&smartcontract.Context{
+			smartContract, err := contracts.NewSmartContract(&contracts.Context{
 				Language:       contractState.Language,
 				Caller:         invokeCode.ProgramHash,
 				StateMachine:   stateMachine,
@@ -967,18 +967,18 @@ func (bd *ChainStore) persist(b *Block) error {
 				ParameterTypes: contractState.Code.ParameterTypes,
 			})
 			if err != nil {
-				log.Error("smartcontract NewSmartContract err:", err)
-				httpwebsocket.PushResult(txHash, SMARTCODE_ERROR, INVOKE_TRANSACTION, err)
+				log.Error("contracts NewSmartContract err:", err)
+				socket.PushResult(txHash, SMARTCODE_ERROR, INVOKE_TRANSACTION, err)
 				continue
 			}
 			ret, err := smartContract.InvokeContract()
 			if err != nil {
 				log.Error("smartContract InvokeContract err:", err)
-				httpwebsocket.PushResult(txHash, SMARTCODE_ERROR, INVOKE_TRANSACTION, err)
+				socket.PushResult(txHash, SMARTCODE_ERROR, INVOKE_TRANSACTION, err)
 				continue
 			}
 			stateMachine.CloneCache.Commit()
-			httpwebsocket.PushResult(txHash, 0, INVOKE_TRANSACTION, ret)
+			socket.PushResult(txHash, 0, INVOKE_TRANSACTION, ret)
 
 		case tx.Record:
 			recordpayload := b.Transactions[i].Payload.(*payload.Record).RecordData
