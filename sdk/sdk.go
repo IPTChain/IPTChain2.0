@@ -19,6 +19,7 @@ import (
 type BatchOut struct {
 	Address string
 	Value   string
+	Note    string
 }
 
 type sortedCoinsItem struct {
@@ -173,6 +174,9 @@ func MakeTransferTransaction(wallet account.Client, assetID Uint256, batchOut ..
 	var expected Fixed64
 	input := []*transaction.UTXOTxInput{}
 	output := []*transaction.TxOutput{}
+
+	noteArr := []string{}
+
 	// construct transaction outputs
 	for _, o := range batchOut {
 		outputValue, err := StringToFixed64(o.Value)
@@ -193,6 +197,10 @@ func MakeTransferTransaction(wallet account.Client, assetID Uint256, batchOut ..
 			ProgramHash: address,
 		}
 		output = append(output, tmp)
+		if len(o.Note) > 0 {
+			noteArr = append(noteArr, o.Note)
+		}
+
 	}
 
 	// construct transaction inputs and changes
@@ -231,6 +239,12 @@ func MakeTransferTransaction(wallet account.Client, assetID Uint256, batchOut ..
 	txAttr := transaction.NewTxAttribute(transaction.Nonce, []byte(strconv.FormatInt(rand.Int63(), 10)))
 	txn.Attributes = make([]*transaction.TxAttribute, 0)
 	txn.Attributes = append(txn.Attributes, &txAttr)
+	// add Note
+	for _, note := range noteArr {
+		txA := transaction.NewTxAttribute(transaction.Description, []byte(note))
+		txn.Attributes = append(txn.Attributes, &txA)
+		//fmt.Println("---- add Note ----")
+	}
 
 	// sign transaction contract
 	ctx := contract.NewContractContext(txn)

@@ -799,7 +799,7 @@ func sendToAddress(params []interface{}) map[string]interface{} {
 	if len(params) < 3 {
 		return IPTRpcNil
 	}
-	var asset, address, value string
+	var asset, address, value, note string
 	switch params[0].(type) {
 	case string:
 		asset = params[0].(string)
@@ -818,6 +818,20 @@ func sendToAddress(params []interface{}) map[string]interface{} {
 	default:
 		return IPTRpcInvalidParameter
 	}
+	/*fmt.Println("-----------")
+	fmt.Println(len(params))
+	fmt.Println("-----------")*/
+	if len(params) == 4 {
+		switch params[3].(type) {
+		case string:
+			note = params[3].(string)
+		default:
+			return IPTRpcInvalidParameter
+		}
+	}
+	/*fmt.Println("---------------")
+	fmt.Println(node)
+	fmt.Println("---------------")*/
 	if Wallet == nil {
 		return IPTRpc("error : wallet is not opened")
 	}
@@ -825,6 +839,7 @@ func sendToAddress(params []interface{}) map[string]interface{} {
 	batchOut := sdk.BatchOut{
 		Address: address,
 		Value:   value,
+		Note:    note,
 	}
 	tmp, err := HexStringToBytesReverse(asset)
 	if err != nil {
