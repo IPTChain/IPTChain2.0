@@ -2,10 +2,11 @@ package session
 
 import (
 	"errors"
-	"github.com/gorilla/websocket"
-	"github.com/pborman/uuid"
 	"sync"
 	"time"
+
+	"github.com/gorilla/websocket"
+	"github.com/pborman/uuid"
 )
 
 type Session struct {

@@ -203,6 +203,10 @@ func NewCommand() *cli.Command {
 		Description: "you could deploy or invoke your smartcontract.",
 		ArgsUsage:   "[args]",
 		Flags: []cli.Flag{
+			cli.StringFlag{
+				Name:  "codeHash, a",
+				Usage: "invoke contract compiler contract code hash",
+			},
 			cli.BoolFlag{
 				Name:  "deploy, d",
 				Usage: "deploy smartcontract",
@@ -226,10 +230,6 @@ func NewCommand() *cli.Command {
 			cli.StringFlag{
 				Name:  "params, p",
 				Usage: "invoke contract compiler contract params",
-			},
-			cli.StringFlag{
-				Name:  "codeHash, a",
-				Usage: "invoke contract compiler contract code hash",
 			},
 		},
 		Action: contractAction,

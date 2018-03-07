@@ -17,9 +17,9 @@ import (
 )
 
 type BatchOut struct {
+	Note    string
 	Address string
 	Value   string
-	Note    string
 }
 
 type sortedCoinsItem struct {

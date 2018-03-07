@@ -152,6 +152,10 @@ func NewCommand() *cli.Command {
 		Description: "With nodectl privacy, you could create privacy payload.",
 		ArgsUsage:   "[args]",
 		Flags: []cli.Flag{
+			cli.StringFlag{
+				Name:  "txhash, t",
+				Usage: "hash of a transaction",
+			},
 			cli.BoolFlag{
 				Name:  "enc, e",
 				Usage: "create an privacy  payload",
@@ -176,10 +180,6 @@ func NewCommand() *cli.Command {
 			cli.StringFlag{
 				Name:  "password, p",
 				Usage: "wallet password",
-			},
-			cli.StringFlag{
-				Name:  "txhash, t",
-				Usage: "hash of a transaction",
 			},
 		},
 		Action: privpayloadAction,
