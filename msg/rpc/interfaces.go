@@ -227,7 +227,7 @@ func getRawMemPool(params []interface{}) map[string]interface{} {
 }
 
 // A JSON example for getrawtransaction method as following:
-//   {"jsonrpc": "2.0", "method": "getrawtransaction", "params": ["transactioin hash in hex"], "id": 0}
+//   {"jsonrpc": "2.0", "method": "getrawtransaction", "params": ["transaction hash in hex"], "id": 0}
 func getRawTransaction(params []interface{}) map[string]interface{} {
 	if len(params) < 1 {
 		return IPTRpcNil
@@ -256,7 +256,7 @@ func getRawTransaction(params []interface{}) map[string]interface{} {
 }
 
 // A JSON example for sendrawtransaction method as following:
-//   {"jsonrpc": "2.0", "method": "sendrawtransaction", "params": ["raw transactioin in hex"], "id": 0}
+//   {"jsonrpc": "2.0", "method": "sendrawtransaction", "params": ["raw transaction in hex"], "id": 0}
 func sendRawTransaction(params []interface{}) map[string]interface{} {
 	if len(params) < 1 {
 		return IPTRpcNil

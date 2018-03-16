@@ -41,8 +41,8 @@ type Configuration struct {
 	EncryptAlg      string             `json:"EncryptAlg"`
 	MaxLogSize      int64              `json:"MaxLogSize"`
 	MaxTxInBlock    int                `json:"MaxTransactionInBlock"`
-	MaxHdrSyncReqs  int                `json:"MaxConcurrentSyncHeaderReqs"`
 	TransactionFee  map[string]float64 `json:"TransactionFee"`
+	MaxHdrSyncReqs  int                `json:"MaxConcurrentSyncHeaderReqs"`
 }
 
 type ConfigFile struct {
