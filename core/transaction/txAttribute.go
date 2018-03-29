@@ -1,11 +1,11 @@
 package transaction
 
 import (
-	"IPT/common/serialization"
 	. "IPT/common/errors"
+	"IPT/common/serialization"
+	"bytes"
 	"errors"
 	"io"
-	"bytes"
 )
 
 type TransactionAttributeUsage byte
@@ -15,11 +15,12 @@ const (
 	Script         TransactionAttributeUsage = 0x20
 	DescriptionUrl TransactionAttributeUsage = 0x81
 	Description    TransactionAttributeUsage = 0x90
+	FileHash       TransactionAttributeUsage = 0x91
 )
 
 func IsValidAttributeType(usage TransactionAttributeUsage) bool {
 	return usage == Nonce || usage == Script ||
-		usage == DescriptionUrl || usage == Description
+		usage == DescriptionUrl || usage == Description || usage == FileHash
 }
 
 type TxAttribute struct {
@@ -71,10 +72,8 @@ func (tx *TxAttribute) Deserialize(r io.Reader) error {
 
 }
 
-
-func (tx *TxAttribute) ToArray() ([]byte) {
+func (tx *TxAttribute) ToArray() []byte {
 	b := new(bytes.Buffer)
 	tx.Serialize(b)
 	return b.Bytes()
 }
-

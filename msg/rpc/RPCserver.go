@@ -31,7 +31,9 @@ func StartRPCServer() {
 	HandleFunc("lockasset", lockAsset)
 	HandleFunc("createmultisigtransaction", createMultisigTransaction)
 	HandleFunc("signmultisigtransaction", signMultisigTransaction)
-
+	HandleFunc("addaccount", addAccount)
+	HandleFunc("openwallet", openWallet)
+	HandleFunc("closewallet", closeWallet)
 	HandleFunc("sendtoaddress", sendToAddress)
 	HandleFunc("createAccountForCust", createAccountForCust)
 

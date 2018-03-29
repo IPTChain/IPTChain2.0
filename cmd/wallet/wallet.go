@@ -363,6 +363,9 @@ func walletAction(c *cli.Context) error {
 				fmt.Fprintln(os.Stderr, err)
 				os.Exit(1)
 			}
+			address, _ := account.ProgramHash.ToAddress()
+			publicKey, _ := account.PublicKey.EncodePoint(true)
+			fmt.Printf("%s %s %s\n", strconv.Itoa(i), address, BytesToHexString(publicKey))
 		}
 		fmt.Printf("%d accounts created\n", num)
 		return nil
