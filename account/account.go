@@ -31,6 +31,16 @@ func NewAccount() (*Account, error) {
 	}, nil
 }
 
+
+
+func (ac *Account) PrivKey() []byte {
+	return ac.PrivateKey
+}
+
+func (ac *Account) PubKey() *crypto.PubKey {
+	return ac.PublicKey
+}
+
 func NewAccountWithPrivatekey(privateKey []byte) (*Account, error) {
 	privKeyLen := len(privateKey)
 
@@ -52,12 +62,4 @@ func NewAccountWithPrivatekey(privateKey []byte) (*Account, error) {
 		PublicKey:   pubKey,
 		ProgramHash: programHash,
 	}, nil
-}
-
-func (ac *Account) PrivKey() []byte {
-	return ac.PrivateKey
-}
-
-func (ac *Account) PubKey() *crypto.PubKey {
-	return ac.PublicKey
 }
