@@ -24,18 +24,6 @@ type CryptoAlgSet struct {
 	Curve     elliptic.Curve
 }
 
-// RandomNum Generate the "real" random number which can be used for crypto algorithm
-func RandomNum(n int) ([]byte, error) {
-	// TODO Get the random number from System urandom
-	b := make([]byte, n)
-	_, err := rand.Read(b)
-
-	if err != nil {
-		return nil, err
-	}
-	return b, nil
-}
-
 func Hash(data []byte) [HASHLEN]byte {
 	return sha256.Sum256(data)
 }
@@ -50,6 +38,18 @@ func CheckMAC(message, messageMAC, key []byte) bool {
 	mac.Write(message)
 	expectedMAC := mac.Sum(nil)
 	return hmac.Equal(messageMAC, expectedMAC)
+}
+
+// RandomNum Generate the "real" random number which can be used for crypto algorithm
+func RandomNum(n int) ([]byte, error) {
+	// TODO Get the random number from System urandom
+	b := make([]byte, n)
+	_, err := rand.Read(b)
+
+	if err != nil {
+		return nil, err
+	}
+	return b, nil
 }
 
 func RIPEMD160(value []byte) []byte {

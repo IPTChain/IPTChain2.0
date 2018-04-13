@@ -38,6 +38,7 @@ func init() {
 }
 
 func main() {
+	//github.com
 	var client account.Client
 	var acct *account.Account
 	var blockChain *ledger.Blockchain

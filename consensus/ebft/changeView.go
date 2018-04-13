@@ -1,25 +1,19 @@
 package ebft
 
 import (
-	"io"
 	ser "IPT/common/serialization"
+	"io"
 )
 
 type ChangeView struct {
-	msgData ConsensusMessageData
+	msgData       ConsensusMessageData
 	NewViewNumber byte
 }
 
-func (cv *ChangeView) Serialize(w io.Writer)error{
-	cv.msgData.Serialize(w)
-	w.Write([]byte{cv.NewViewNumber})
-	return nil
-}
-
 //read data to reader
-func (cv *ChangeView) Deserialize(r io.Reader) error{
-	 cv.msgData.Deserialize(r)
-	viewNum,err := ser.ReadBytes(r,1)
+func (cv *ChangeView) Deserialize(r io.Reader) error {
+	cv.msgData.Deserialize(r)
+	viewNum, err := ser.ReadBytes(r, 1)
 	if err != nil {
 		return err
 	}
@@ -27,15 +21,20 @@ func (cv *ChangeView) Deserialize(r io.Reader) error{
 	return nil
 }
 
-func (cv *ChangeView) Type() ConsensusMessageType{
+func (cv *ChangeView) Type() ConsensusMessageType {
 	return cv.ConsensusMessageData().Type
 }
 
-func (cv *ChangeView) ViewNumber() byte{
+func (cv *ChangeView) ViewNumber() byte {
 	return cv.msgData.ViewNumber
 }
 
-func (cv *ChangeView) ConsensusMessageData() *ConsensusMessageData{
-	return &(cv.msgData)
+func (cv *ChangeView) Serialize(w io.Writer) error {
+	cv.msgData.Serialize(w)
+	w.Write([]byte{cv.NewViewNumber})
+	return nil
 }
 
+func (cv *ChangeView) ConsensusMessageData() *ConsensusMessageData {
+	return &(cv.msgData)
+}
