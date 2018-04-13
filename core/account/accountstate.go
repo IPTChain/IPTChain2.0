@@ -13,13 +13,7 @@ type AccountState struct {
 	Balances map[common.Uint256]common.Fixed64
 }
 
-func NewAccountState(programHash common.Uint160, balances map[common.Uint256]common.Fixed64) *AccountState {
-	var accountState AccountState
-	accountState.ProgramHash = programHash
-	accountState.Balances = balances
-	accountState.IsFrozen = false
-	return &accountState
-}
+
 
 func(accountState *AccountState)Serialize(w io.Writer) error {
 	accountState.ProgramHash.Serialize(w)
@@ -53,10 +47,17 @@ func(accountState *AccountState)Deserialize(r io.Reader) error {
 	return nil
 }
 
+func NewAccountState(programHash common.Uint160, balances map[common.Uint256]common.Fixed64) *AccountState {
+	var accountState AccountState
+	accountState.ProgramHash = programHash
+	accountState.Balances = balances
+	accountState.IsFrozen = false
+	return &accountState
+}
+
 func(accountState *AccountState) ToArray() []byte {
 	b := new(bytes.Buffer)
 	accountState.Serialize(b)
 	return b.Bytes()
 }
-
 
