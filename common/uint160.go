@@ -16,21 +16,6 @@ const UINT160SIZE int = 20
 
 type Uint160 [UINT160SIZE]uint8
 
-func (u *Uint160) CompareTo(o Uint160) int {
-	x := u.ToArray()
-	y := o.ToArray()
-
-	for i := len(x) - 1; i >= 0; i-- {
-		if x[i] > y[i] {
-			return 1
-		}
-		if x[i] < y[i] {
-			return -1
-		}
-	}
-
-	return 0
-}
 
 func (u *Uint160) ToArray() []byte {
 	var x []byte = make([]byte, UINT160SIZE)
@@ -47,6 +32,23 @@ func (u *Uint160) ToArrayReverse() []byte {
 	}
 	return x
 }
+
+func (u *Uint160) CompareTo(o Uint160) int {
+	x := u.ToArray()
+	y := o.ToArray()
+
+	for i := len(x) - 1; i >= 0; i-- {
+		if x[i] > y[i] {
+			return 1
+		}
+		if x[i] < y[i] {
+			return -1
+		}
+	}
+
+	return 0
+}
+
 func (u *Uint160) Serialize(w io.Writer) (int, error) {
 	b_buf := bytes.NewBuffer([]byte{})
 	binary.Write(b_buf, binary.LittleEndian, u)

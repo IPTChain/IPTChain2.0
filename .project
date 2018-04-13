@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>IPTChain1.2</name>
+	<name>IPTChain2.0</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -16,20 +16,7 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1516954750112</id>
-			<name></name>
-			<type>26</type>
-			<matcher>
-				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-name-matches-false-false-node_modules</arguments>
-			</matcher>
-		</filter>
-		<filter>
-<<<<<<< HEAD
-			<id>1523612515016</id>
-=======
-			<id>1523612351488</id>
->>>>>>> c57cb8fbf59269baf28886b326cd35704c5331d8
+			<id>1523613157418</id>
 			<name></name>
 			<type>26</type>
 			<matcher>

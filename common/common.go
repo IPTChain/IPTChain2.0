@@ -27,6 +27,12 @@ func ToCodeHash(code []byte) (Uint160, error) {
 	return hash, nil
 }
 
+func IntToBytes(n int) []byte {
+	tmp := int32(n)
+	bytesBuffer := bytes.NewBuffer([]byte{})
+	binary.Write(bytesBuffer, binary.LittleEndian, tmp)
+	return bytesBuffer.Bytes()
+}
 func GetNonce() uint64 {
 	log.Debug()
 	// Fixme replace with the real random number generator
@@ -34,19 +40,7 @@ func GetNonce() uint64 {
 	return nonce
 }
 
-func IntToBytes(n int) []byte {
-	tmp := int32(n)
-	bytesBuffer := bytes.NewBuffer([]byte{})
-	binary.Write(bytesBuffer, binary.LittleEndian, tmp)
-	return bytesBuffer.Bytes()
-}
 
-func BytesToInt16(b []byte) int16 {
-	bytesBuffer := bytes.NewBuffer(b)
-	var tmp int16
-	binary.Read(bytesBuffer, binary.BigEndian, &tmp)
-	return int16(tmp)
-}
 
 func BytesToInt(b [] byte) []int {
 	i := make([]int, len(b))
@@ -56,6 +50,12 @@ func BytesToInt(b [] byte) []int {
 	return i
 }
 
+func BytesToInt16(b []byte) int16 {
+	bytesBuffer := bytes.NewBuffer(b)
+	var tmp int16
+	binary.Read(bytesBuffer, binary.BigEndian, &tmp)
+	return int16(tmp)
+}
 func IsEqualBytes(b1 []byte, b2 []byte) bool {
 	len1 := len(b1)
 	len2 := len(b2)
