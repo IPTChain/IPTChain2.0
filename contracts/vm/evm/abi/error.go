@@ -34,6 +34,9 @@ func sliceTypeCheck(t Type, val reflect.Value) error {
 	return nil
 }
 
+func typeErr(expected, got interface{}) error {
+	return fmt.Errorf("abi: cannot use %v as type %v as argument", got, expected)
+}
 
 func typeCheck(t Type, value reflect.Value) error {
 	if t.IsSlice || t.IsArray {
@@ -45,8 +48,4 @@ func typeCheck(t Type, value reflect.Value) error {
 		return typeErr(t.Kind, value.Kind())
 	}
 	return nil
-}
-
-func typeErr(expected, got interface{}) error {
-	return fmt.Errorf("abi: cannot use %v as type %v as argument", got, expected)
 }

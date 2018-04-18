@@ -3,7 +3,6 @@ package main
 import (
 	"os"
 	"sort"
-
 	_ "IPT/cmd"
 	"IPT/cmd/asset"
 	"IPT/cmd/bookkeeper"
@@ -17,7 +16,6 @@ import (
 	"IPT/cmd/priv"
 	"IPT/cmd/recover"
 	"IPT/cmd/wallet"
-
 	"github.com/urfave/cli"
 )
 
@@ -37,6 +35,7 @@ func main() {
 		NewIpFlag(),
 		NewPortFlag(),
 	}
+	
 	//commands
 	app.Commands = []cli.Command{
 		*consensus.NewCommand(),
@@ -51,6 +50,7 @@ func main() {
 		*multisig.NewCommand(),
 		*contract.NewCommand(),
 	}
+
 	sort.Sort(cli.CommandsByName(app.Commands))
 	sort.Sort(cli.FlagsByName(app.Flags))
 
