@@ -2,6 +2,11 @@ package service
 
 import (
 	"IPT/common"
+	"IPT/common/errors"
+	. "IPT/contracts/errors"
+	"IPT/contracts/states"
+	"IPT/contracts/storage"
+	"IPT/contracts/vm/avm"
 	"IPT/core/asset"
 	"IPT/core/code"
 	"IPT/core/contract"
@@ -9,11 +14,6 @@ import (
 	"IPT/core/store"
 	"IPT/core/transaction"
 	"IPT/crypto"
-	"IPT/common/errors"
-	. "IPT/contracts/errors"
-	"IPT/contracts/states"
-	"IPT/contracts/storage"
-	"IPT/contracts/vm/avm"
 	"bytes"
 	"encoding/hex"
 	"fmt"
@@ -116,62 +116,6 @@ func (s *StateMachine) CreateAsset(engine *avm.ExecutionEngine) (bool, error) {
 	return true, nil
 }
 
-func (s *StateMachine) CreateContract(engine *avm.ExecutionEngine) (bool, error) {
-	codeByte := avm.PopByteArray(engine)
-	if len(codeByte) > 1024*1024 {
-		return false, nil
-	}
-	parameters := avm.PopByteArray(engine)
-	if len(parameters) > 252 {
-		return false, nil
-	}
-	parameterList := make([]contract.ContractParameterType, 0)
-	for _, v := range parameters {
-		parameterList = append(parameterList, contract.ContractParameterType(v))
-	}
-	returnType := avm.PopInt(engine)
-	nameByte := avm.PopByteArray(engine)
-	if len(nameByte) > 252 {
-		return false, nil
-	}
-	versionByte := avm.PopByteArray(engine)
-	if len(versionByte) > 252 {
-		return false, nil
-	}
-	authorByte := avm.PopByteArray(engine)
-	if len(authorByte) > 252 {
-		return false, nil
-	}
-	emailByte := avm.PopByteArray(engine)
-	if len(emailByte) > 252 {
-		return false, nil
-	}
-	descByte := avm.PopByteArray(engine)
-	if len(emailByte) > 65536 {
-		return false, nil
-	}
-	funcCode := &code.FunctionCode{
-		Code:           codeByte,
-		ParameterTypes: parameterList,
-		ReturnType:     contract.ContractParameterType(returnType),
-	}
-	contractState := &states.ContractState{
-		Code:        funcCode,
-		Name:        hex.EncodeToString(nameByte),
-		Version:     hex.EncodeToString(versionByte),
-		Author:      hex.EncodeToString(authorByte),
-		Email:       hex.EncodeToString(emailByte),
-		Description: hex.EncodeToString(descByte),
-	}
-	codeHash, err := common.Uint160ParseFromBytes(codeByte)
-	if err != nil {
-		return false, err
-	}
-	s.CloneCache.GetInnerCache().GetOrAdd(store.ST_Contract, string(codeHash.ToArray()), contractState)
-	avm.PushData(engine, contractState)
-	return true, nil
-}
-
 func (s *StateMachine) GetContract(engine *avm.ExecutionEngine) (bool, error) {
 	hashByte := avm.PopByteArray(engine)
 	hash, err := common.Uint160ParseFromBytes(hashByte)
@@ -251,6 +195,62 @@ func (s *StateMachine) StorageGet(engine *avm.ExecutionEngine) (bool, error) {
 	} else {
 		avm.PushData(engine, item.(*states.StorageItem).Value)
 	}
+	return true, nil
+}
+
+func (s *StateMachine) CreateContract(engine *avm.ExecutionEngine) (bool, error) {
+	codeByte := avm.PopByteArray(engine)
+	if len(codeByte) > 1024*1024 {
+		return false, nil
+	}
+	parameters := avm.PopByteArray(engine)
+	if len(parameters) > 252 {
+		return false, nil
+	}
+	parameterList := make([]contract.ContractParameterType, 0)
+	for _, v := range parameters {
+		parameterList = append(parameterList, contract.ContractParameterType(v))
+	}
+	returnType := avm.PopInt(engine)
+	nameByte := avm.PopByteArray(engine)
+	if len(nameByte) > 252 {
+		return false, nil
+	}
+	versionByte := avm.PopByteArray(engine)
+	if len(versionByte) > 252 {
+		return false, nil
+	}
+	authorByte := avm.PopByteArray(engine)
+	if len(authorByte) > 252 {
+		return false, nil
+	}
+	emailByte := avm.PopByteArray(engine)
+	if len(emailByte) > 252 {
+		return false, nil
+	}
+	descByte := avm.PopByteArray(engine)
+	if len(emailByte) > 65536 {
+		return false, nil
+	}
+	funcCode := &code.FunctionCode{
+		Code:           codeByte,
+		ParameterTypes: parameterList,
+		ReturnType:     contract.ContractParameterType(returnType),
+	}
+	contractState := &states.ContractState{
+		Code:        funcCode,
+		Name:        hex.EncodeToString(nameByte),
+		Version:     hex.EncodeToString(versionByte),
+		Author:      hex.EncodeToString(authorByte),
+		Email:       hex.EncodeToString(emailByte),
+		Description: hex.EncodeToString(descByte),
+	}
+	codeHash, err := common.Uint160ParseFromBytes(codeByte)
+	if err != nil {
+		return false, err
+	}
+	s.CloneCache.GetInnerCache().GetOrAdd(store.ST_Contract, string(codeHash.ToArray()), contractState)
+	avm.PushData(engine, contractState)
 	return true, nil
 }
 
