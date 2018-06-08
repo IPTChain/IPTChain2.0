@@ -83,14 +83,6 @@ func ReadBits(bigint *big.Int, buf []byte) {
 	}
 }
 
-func CalcMemSize(off, l *big.Int) *big.Int {
-	if l.Sign() == 0 {
-		return Big0
-	}
-
-	return new(big.Int).Add(off, l)
-}
-
 func Exp(base, exponent *big.Int) *big.Int {
 	result := big.NewInt(1)
 
@@ -116,6 +108,14 @@ func S256(x *big.Int) *big.Int {
 	} else {
 		return new(big.Int).Sub(x, tt256)
 	}
+}
+
+func CalcMemSize(off, l *big.Int) *big.Int {
+	if l.Sign() == 0 {
+		return Big0
+	}
+
+	return new(big.Int).Add(off, l)
 }
 
 
