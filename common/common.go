@@ -1,17 +1,18 @@
 package common
 
 import (
-	"IPT/common/log"
 	. "IPT/common/errors"
+	"IPT/common/log"
 	"bytes"
 	"crypto/sha256"
 	"encoding/binary"
 	"encoding/hex"
 	"errors"
-	"github.com/golang/crypto/ripemd160"
 	"io"
 	"math/rand"
 	"os"
+
+	"github.com/golang/crypto/ripemd160"
 )
 
 func ToCodeHash(code []byte) (Uint160, error) {
@@ -27,12 +28,6 @@ func ToCodeHash(code []byte) (Uint160, error) {
 	return hash, nil
 }
 
-func IntToBytes(n int) []byte {
-	tmp := int32(n)
-	bytesBuffer := bytes.NewBuffer([]byte{})
-	binary.Write(bytesBuffer, binary.LittleEndian, tmp)
-	return bytesBuffer.Bytes()
-}
 func GetNonce() uint64 {
 	log.Debug()
 	// Fixme replace with the real random number generator
@@ -40,14 +35,18 @@ func GetNonce() uint64 {
 	return nonce
 }
 
+func ByteToBytes(n int) []byte {
+	tmp := byte(n)
+	bytesBuffer := bytes.NewBuffer([]byte{})
+	binary.Write(bytesBuffer, binary.LittleEndian, tmp)
+	return bytesBuffer.Bytes()
+}
 
-
-func BytesToInt(b [] byte) []int {
-	i := make([]int, len(b))
-	for k,v := range b {
-		i[k] = int(v)
-	}
-	return i
+func IntToBytes(n int) []byte {
+	tmp := int32(n)
+	bytesBuffer := bytes.NewBuffer([]byte{})
+	binary.Write(bytesBuffer, binary.LittleEndian, tmp)
+	return bytesBuffer.Bytes()
 }
 
 func BytesToInt16(b []byte) int16 {
@@ -56,6 +55,15 @@ func BytesToInt16(b []byte) int16 {
 	binary.Read(bytesBuffer, binary.BigEndian, &tmp)
 	return int16(tmp)
 }
+
+func BytesToInt(b []byte) []int {
+	i := make([]int, len(b))
+	for k, v := range b {
+		i[k] = int(v)
+	}
+	return i
+}
+
 func IsEqualBytes(b1 []byte, b2 []byte) bool {
 	len1 := len(b1)
 	len2 := len(b2)
@@ -83,7 +91,7 @@ func HexStringToBytes(value string) ([]byte, error) {
 func ToArrayReverse(arr []byte) []byte {
 	l := len(arr)
 	x := make([]byte, 0)
-	for i := l - 1; i >= 0 ;i--{
+	for i := l - 1; i >= 0; i-- {
 		x = append(x, arr[i])
 	}
 	return x
