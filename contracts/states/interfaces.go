@@ -32,7 +32,7 @@ func GetStateValue(prefix store.DataEntryPrefix, data []byte) (IStateValueInterf
 	r := bytes.NewBuffer(data)
 	state := StatesMap[prefix]
 	if err := state.Deserialize(r); err != nil {
-		return nil, err
+	return nil, err
 	}
 	return state, nil
 }

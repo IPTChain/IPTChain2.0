@@ -273,9 +273,13 @@ func sendRawTransaction(params []interface{}) map[string]interface{} {
 		if err := txn.Deserialize(bytes.NewReader(hex)); err != nil {
 			return IPTRpcInvalidTransaction
 		}
-		if txn.TxType != tx.InvokeCode && txn.TxType != tx.DeployCode &&
-			txn.TxType != tx.TransferAsset && txn.TxType != tx.LockAsset &&
-			txn.TxType != tx.BookKeeper {
+		if txn.TxType != tx.InvokeCode &&
+			txn.TxType != tx.DeployCode &&
+			txn.TxType != tx.TransferAsset &&
+			txn.TxType != tx.LockAsset &&
+			txn.TxType != tx.BookKeeper &&
+			txn.TxType !=tx.RegisterAsset &&
+			txn.TxType!=tx.IssueAsset{
 			return IPTRpc("invalid transaction type")
 		}
 		hash = txn.Hash()
