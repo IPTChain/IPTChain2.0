@@ -9,6 +9,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -59,6 +60,8 @@ const (
 	Api_GetContract         = "/api/v1/contract/:hash"
 	Api_GetRecordByHash     = "/api/v1/custom/record/:hash"
 	Api_GetRecordByFileHash = "/api/v1/custom/file/:hash"
+	Api_DeployContract      = "/api/v1/contract/deploy"
+	Api_InvokeContract      = "/api/v1/contract/invoke"
 )
 
 func InitRestServer(checkAccessToken func(string, string) (string, int64, interface{})) ApiServer {
@@ -180,13 +183,18 @@ func (rt *restServer) registryMethod() {
 		Api_NoticeServerUrl:   {name: "setnoticeserverurl", handler: SetNoticeServerUrl},
 		Api_NoticeServerState: {name: "setpostblock", handler: SetPushBlockFlag},
 		Api_WebsocketState:    {name: "setwebsocketstate", handler: rt.setWebsocketState},
+		Api_DeployContract:    {name: "deploycontract", handler: DeployContract},
+		Api_InvokeContract:    {name: "invokecontract", handler: InvokeContract},
 	}
 	rt.postMap = postMethodMap
 	rt.getMap = getMethodMap
 }
 func (rt *restServer) getPath(url string) string {
-
-	if strings.Contains(url, strings.TrimRight(Api_GetblockTxsByHeight, ":height")) {
+	if strings.Contains(url, Api_DeployContract) {
+		return Api_DeployContract
+	} else if strings.Contains(url, Api_InvokeContract) {
+		return Api_InvokeContract
+	} else if strings.Contains(url, strings.TrimRight(Api_GetblockTxsByHeight, ":height")) {
 		return Api_GetblockTxsByHeight
 	} else if strings.Contains(url, strings.TrimRight(Api_Getblockbyheight, ":height")) {
 		return Api_Getblockbyheight
@@ -223,6 +231,8 @@ func (rt *restServer) getPath(url string) string {
 }
 func (rt *restServer) getParams(r *http.Request, url string, req map[string]interface{}) map[string]interface{} {
 	switch url {
+	case Api_InvokeContract:
+		break
 	case Api_Getconnectioncount:
 		break
 	case Api_GetblockTxsByHeight:
@@ -340,7 +350,6 @@ func (rt *restServer) initPostHandler() {
 
 			body, _ := ioutil.ReadAll(r.Body)
 			defer r.Body.Close()
-
 			var req = make(map[string]interface{})
 			var resp map[string]interface{}
 			access_token := r.FormValue("access_token")
@@ -354,6 +363,7 @@ func (rt *restServer) initPostHandler() {
 				rt.response(w, resp)
 				return
 			}
+
 			if h, ok := rt.postMap[url]; ok {
 				if err := json.Unmarshal(body, &req); err == nil {
 					req["CAkey"] = CAkey

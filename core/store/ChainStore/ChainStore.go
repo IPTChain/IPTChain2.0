@@ -834,23 +834,6 @@ func (bd *ChainStore) persist(b *Block) error {
 
 	for i := 0; i < nLen; i++ {
 
-		// now support RegisterAsset / IssueAsset / TransferAsset and Miner TX ONLY.
-		if b.Transactions[i].TxType == tx.RegisterAsset ||
-			b.Transactions[i].TxType == tx.LockAsset ||
-			b.Transactions[i].TxType == tx.IssueAsset ||
-			b.Transactions[i].TxType == tx.TransferAsset ||
-			b.Transactions[i].TxType == tx.Record ||
-			b.Transactions[i].TxType == tx.BookKeeper ||
-			b.Transactions[i].TxType == tx.PrivacyPayload ||
-			b.Transactions[i].TxType == tx.BookKeeping ||
-			b.Transactions[i].TxType == tx.DeployCode ||
-			b.Transactions[i].TxType == tx.InvokeCode ||
-			b.Transactions[i].TxType == tx.DataFile {
-			err = bd.SaveTransaction(b.Transactions[i], b.Blockdata.Height)
-			if err != nil {
-				return err
-			}
-		}
 		txHash := b.Transactions[i].Hash()
 		switch b.Transactions[i].TxType {
 		case tx.RegisterAsset:
@@ -980,6 +963,30 @@ func (bd *ChainStore) persist(b *Block) error {
 			stateMachine.CloneCache.Commit()
 			socket.PushResult(txHash, 0, INVOKE_TRANSACTION, ret)
 
+			newProgram := program.Program{
+				Parameter: make([]byte, 1),
+			}
+			switch ret.(type) {
+			case *big.Int:
+				v := ret.(*big.Int)
+				newProgram.Code = v.Bytes()
+			case bool:
+				v := ret.(bool)
+				if v {
+					newProgram.Code = []byte{1}
+				} else {
+					newProgram.Code = []byte{0}
+				}
+			case string:
+				v := ret.(string)
+				newProgram.Code = []byte(v)
+			case []byte:
+				v := ret.([]byte)
+				newProgram.Code = v
+
+			}
+
+			b.Transactions[i].Programs = append(b.Transactions[i].Programs, &newProgram)
 		case tx.Record:
 			recordpayload := b.Transactions[i].Payload.(*payload.Record).RecordData
 
@@ -988,9 +995,27 @@ func (bd *ChainStore) persist(b *Block) error {
 				continue
 			}
 
-			err = bd.SaveRecord(tmp.Data.Hash, txHash)
+			err = bd.SaveRecord(tmp.Hash, txHash)
 			if err != nil {
 				continue
+			}
+		}
+
+		// now support RegisterAsset / IssueAsset / TransferAsset and Miner TX ONLY.
+		if b.Transactions[i].TxType == tx.RegisterAsset ||
+			b.Transactions[i].TxType == tx.LockAsset ||
+			b.Transactions[i].TxType == tx.IssueAsset ||
+			b.Transactions[i].TxType == tx.TransferAsset ||
+			b.Transactions[i].TxType == tx.Record ||
+			b.Transactions[i].TxType == tx.BookKeeper ||
+			b.Transactions[i].TxType == tx.PrivacyPayload ||
+			b.Transactions[i].TxType == tx.BookKeeping ||
+			b.Transactions[i].TxType == tx.DeployCode ||
+			b.Transactions[i].TxType == tx.InvokeCode ||
+			b.Transactions[i].TxType == tx.DataFile {
+			err = bd.SaveTransaction(b.Transactions[i], b.Blockdata.Height)
+			if err != nil {
+				return err
 			}
 		}
 

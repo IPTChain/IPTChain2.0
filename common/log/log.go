@@ -105,6 +105,15 @@ func New(out io.Writer, prefix string, flag, level int, file *os.File) *Logger {
 	}
 }
 
+func (l *Logger) SetDebugLevel(level int) error {
+	if level > maxLevelLog || level < 0 {
+		return errors.New("Invalid Debug Level")
+	}
+
+	l.level = level
+	return nil
+}
+
 func (l *Logger) Output(level int, a ...interface{}) error {
 	if level >= l.level {
 		gid := GetGID()
@@ -126,15 +135,6 @@ func (l *Logger) Outputf(level int, format string, v ...interface{}) error {
 
 		return l.logger.Output(callDepth, fmt.Sprintf("%s %s %d, "+format+"\n", v...))
 	}
-	return nil
-}
-
-func (l *Logger) SetDebugLevel(level int) error {
-	if level > maxLevelLog || level < 0 {
-		return errors.New("Invalid Debug Level")
-	}
-
-	l.level = level
 	return nil
 }
 
