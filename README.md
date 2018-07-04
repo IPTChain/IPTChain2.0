@@ -30,7 +30,7 @@ Clone the DNA repository into the appropriate $GOPATH/src directory.
 
 
 ```shell
-$ git clone https://github.com/DNAProject/DNA.git
+$ git clone https://github.com/IPTChain/IPTChain2.0.git
 
 ```
 
